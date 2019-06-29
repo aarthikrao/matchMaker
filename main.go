@@ -80,17 +80,33 @@ func main() {
 				return
 			}
 			teamSize, err := utils.StrToInt(c.Args[0])
+
+			// Warning if the length of all player is more than twice that team size
 			if teamSize > len(allPlayers)/2 {
 				fmt.Println("Please enter a value from 0 to", len(allPlayers)/2)
 				return
 			}
-			if err == nil {
-				for i, match := range teams.CreateMatches(allPlayers, teamSize) {
-					fmt.Printf("%d %v => Diff: %v \n", i, match, utils.Abs(match.TeamA.ARank-match.TeamB.ARank))
-				}
-			} else {
+			if err != nil {
 				fmt.Println("Please enter a valid number")
+				return
 			}
+			for i, match := range teams.CreateMatches(allPlayers, teamSize) {
+				// get rank diffrence in teams
+				rankDiff := utils.Abs(match.TeamA.ARank - match.TeamB.ARank)
+				fmt.Printf("%d > ", i)
+				// Print teamA players details
+				for _, player := range match.TeamA.Players {
+					fmt.Printf("%v:%v ", player.Name, player.Rank)
+				}
+				fmt.Print(" -VS- ")
+
+				// print teamB players details
+				for _, player := range match.TeamB.Players {
+					fmt.Printf("%v:%v ", player.Name, player.Rank)
+				}
+				fmt.Printf("-> Diff: %v \n", rankDiff)
+			}
+
 		},
 	})
 
